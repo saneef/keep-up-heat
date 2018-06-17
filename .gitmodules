@@ -1,0 +1,3 @@
+[submodule "max31855"]
+	path = max31855
+	url = https://github.com/saneef/max31855.git
