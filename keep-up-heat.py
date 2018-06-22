@@ -14,19 +14,19 @@ relay_pin = 16
 thermocouple = None
 
 temp_level = {
-	'LOW': 200,
-	'MED': 235,
-	'HIGH': 250,
-	'COOL': 50
+	'LOW': 150,
+	'MED': 180,
+	'HIGH': 200,
+	'COOL': 40
 }
 
 probe_delay = .25 # Seconds. Minimum .25 is required for themocouple to work
 
 profile = [
 	{'minute': 0, 'temp_level': temp_level['LOW']},
-	{'minute': 3, 'temp_level': temp_level['MED']},
-	{'minute': 6, 'temp_level': temp_level['HIGH']},
-	{'minute': 8, 'temp_level': temp_level['COOL']},
+	{'minute': 2, 'temp_level': temp_level['MED']},
+	{'minute': 4, 'temp_level': temp_level['HIGH']},
+	{'minute': 9, 'temp_level': temp_level['COOL']},
 ]
 
 
