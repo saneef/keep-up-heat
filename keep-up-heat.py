@@ -4,8 +4,8 @@
 import time
 import sys
 import datetime
-from max6675 import MAX6675, MAX6675Error
 import RPi.GPIO as GPIO
+from max31855.max6675 import MAX6675, MAX6675Error
 
 cs_pin = 8
 clock_pin = 11
