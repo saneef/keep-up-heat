@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import time
 import sys
@@ -15,9 +16,9 @@ relay_pin = 16
 thermocouple = None
 
 temp_level = {
-	'LOW': 150,
-	'MED': 180,
-	'HIGH': 195,
+	'LOW': 180,
+	'MED': 215,
+	'HIGH': 230,
 	'COOL': 40
 }
 
@@ -27,7 +28,7 @@ profile = [
 	{'minute': 0, 'temp_level': temp_level['LOW']},
 	{'minute': 2, 'temp_level': temp_level['MED']},
 	{'minute': 6, 'temp_level': temp_level['HIGH']},
-	{'minute': 11, 'temp_level': temp_level['COOL']},
+	{'minute': 20, 'temp_level': temp_level['COOL']},
 ]
 
 
@@ -80,7 +81,7 @@ def main():
 		current_checkpoint = get_next_setting(start_time, current_time, current_checkpoint)
 		dest_temp = checkpoints[current_checkpoint]["temp_level"]
 		elapsed_time = datetime.timedelta(seconds=round(current_time - start_time))
-		message = 'Current: %s DegC	Destination: %s DegC	Elapsed: %s' % (current_temp, dest_temp, elapsed_time)
+		message = "Temp. %.2f°C  Set Temp. %s°C  Elapsed: %s" % (current_temp, dest_temp, elapsed_time)
 		sys.stdout.write(message)
 		ret =  "\r" * (len(message) + 1)
 		if current_temp < dest_temp:
