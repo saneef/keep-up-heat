@@ -10,17 +10,16 @@ import RPi.GPIO as GPIO
 cs_pin = 8
 clock_pin = 11
 data_pin = 9
-units = "c"
 relay_pin = 16
-
-thermocouple = None
-
+units = "c"
 temp_level = {
 	'LOW': 180,
 	'MED': 215,
 	'HIGH': 230,
 	'COOL': 40
 }
+fixed_heat_level = None
+thermocouple = None
 
 probe_delay = .25 # Seconds. Minimum .25 is required for themocouple to work
 
@@ -31,15 +30,20 @@ profile = [
 	{'minute': 20, 'temp_level': temp_level['COOL']},
 ]
 
-
-# profile = [
-# 	{'minute': 0, 'temp_level': temp_level['LOW']},
-# 	{'minute': .1, 'temp_level': temp_level['MED']},
-# 	{'minute': .4, 'temp_level': temp_level['HIGH']},
-# 	{'minute': .8, 'temp_level':  20 },
-# ]
-
 checkpoints = sorted(profile, key=lambda x: x['minute'])
+
+def heat_level_from_args(argv):
+	try:
+		index =  argv.index('--heat')
+	except ValueError:
+		return None
+
+	if (index > 0):
+		temp = argv[index + 1]
+		if temp != None and temp_level.has_key(temp):
+			return temp_level[temp]
+
+	return None
 
 def init_relay():
 	GPIO.setup(relay_pin, GPIO.OUT)
@@ -75,11 +79,15 @@ def main():
 	init_relay()
 	current_checkpoint = 0
 	start_time = time.time()
+	fixed_heat_level = heat_level_from_args(sys.argv)
 	while True:
 		current_temp = thermocouple.get()
 		current_time = time.time()
-		current_checkpoint = get_next_setting(start_time, current_time, current_checkpoint)
-		dest_temp = checkpoints[current_checkpoint]["temp_level"]
+		if fixed_heat_level != None:
+			dest_temp = fixed_heat_level
+		else:
+			current_checkpoint = get_next_setting(start_time, current_time, current_checkpoint)
+			dest_temp = fixed_heat_level if fixed_heat_level != None else  checkpoints[current_checkpoint]["temp_level"]
 		elapsed_time = datetime.timedelta(seconds=round(current_time - start_time))
 		message = "Temp. %.2f°C  Set Temp. %s°C  Elapsed: %s" % (current_temp, dest_temp, elapsed_time)
 		sys.stdout.write(message)
