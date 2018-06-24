@@ -101,7 +101,7 @@ def main():
 		sys.stdout.flush()
 
 def cleanup():
-	print "Cleaning up..."
+	print "\nCleaning up GPIO..."
 	cleanup_thermocouple()
 	cleanup_relay()
 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 	try:
 		main()
 	except KeyboardInterrupt:
-		print "Exitting..."
 		cleanup()
+		print "Exitting..."
 	sys.exit(0)
 
