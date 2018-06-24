@@ -89,7 +89,7 @@ def main():
 			current_checkpoint = get_next_setting(start_time, current_time, current_checkpoint)
 			dest_temp = fixed_heat_level if fixed_heat_level != None else  checkpoints[current_checkpoint]["temp_level"]
 		elapsed_time = datetime.timedelta(seconds=round(current_time - start_time))
-		message = "Temp. %.2f°C  Set Temp. %s°C  Elapsed: %s" % (current_temp, dest_temp, elapsed_time)
+		message = "%.2f°C (%s°C)	Elapsed: %s"  % (current_temp, dest_temp, elapsed_time)
 		sys.stdout.write(message)
 		ret =  "\r" * (len(message) + 1)
 		if current_temp < dest_temp:
