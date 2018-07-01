@@ -6,6 +6,7 @@ import sys
 import datetime
 import RPi.GPIO as GPIO
 from max31855.max6675 import MAX6675, MAX6675Error
+from mlx90614 import MLX90614
 
 cs_pin = 8
 clock_pin = 11
@@ -20,6 +21,7 @@ temp_level = {
 }
 fixed_heat_level = None
 thermocouple = None
+ir_thermometer = None
 
 probe_delay = .25 # Seconds. Minimum .25 is required for themocouple to work
 
@@ -59,7 +61,9 @@ def cleanup_relay():
 
 def init_thermocouple():
 	global thermocouple
+	global ir_thermometer
 	thermocouple = MAX6675(cs_pin, clock_pin, data_pin, units)
+	ir_thermometer = MLX90614()
 
 def cleanup_thermocouple():
 	if thermocouple != None:
@@ -75,13 +79,18 @@ def get_next_setting(start_time, current_time, checkpoint=0):
 	return next_checkpoint
 
 def main():
+	global ir_thermometer
+	global thermocouple 
 	init_thermocouple()
 	init_relay()
 	current_checkpoint = 0
 	start_time = time.time()
 	fixed_heat_level = heat_level_from_args(sys.argv)
 	while True:
-		current_temp = thermocouple.get()
+		try:
+			current_temp = thermocouple.get()
+		except:
+			current_temp = 0.0
 		current_time = time.time()
 		if fixed_heat_level != None:
 			dest_temp = fixed_heat_level
@@ -90,6 +99,12 @@ def main():
 			dest_temp = fixed_heat_level if fixed_heat_level != None else  checkpoints[current_checkpoint]["temp_level"]
 		elapsed_time = datetime.timedelta(seconds=round(current_time - start_time))
 		message = "%.2f°C (%s°C)	Elapsed: %s"  % (current_temp, dest_temp, elapsed_time)
+		
+		if ir_thermometer:
+			try:
+				message += " Bean: %.2fdegC" % (ir_thermometer.get_obj_temp())
+			except IOError:
+				pass
 		sys.stdout.write(message)
 		ret =  "\r" * (len(message) + 1)
 		if current_temp < dest_temp:
