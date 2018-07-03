@@ -98,11 +98,11 @@ def main():
 			current_checkpoint = get_next_setting(start_time, current_time, current_checkpoint)
 			dest_temp = fixed_heat_level if fixed_heat_level != None else  checkpoints[current_checkpoint]["temp_level"]
 		elapsed_time = datetime.timedelta(seconds=round(current_time - start_time))
-		message = "%.2f°C (%s°C)	Elapsed: %s"  % (current_temp, dest_temp, elapsed_time)
+		message = "[%s] Hot Air: %.2f°C (%s°C)"  % (elapsed_time, current_temp, dest_temp)
 		
 		if ir_thermometer:
 			try:
-				message += " Bean: %.2fdegC" % (ir_thermometer.get_obj_temp())
+				message += " Bean: %.2f°C" % (ir_thermometer.get_obj_temp())
 			except IOError:
 				pass
 		sys.stdout.write(message)
