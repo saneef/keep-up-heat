@@ -15,7 +15,7 @@ units = "c"
 temp_level = {
 	'LOW': 180,
 	'MED': 215,
-	'HIGH': 230,
+	'HIGH': 240,
 	'COOL': 40
 }
 fixed_heat_level = None
@@ -26,7 +26,7 @@ probe_delay = .25 # Seconds. Minimum .25 is required for themocouple to work
 profile = [
 	{'minute': 0, 'temp_level': temp_level['LOW']},
 	{'minute': 2, 'temp_level': temp_level['MED']},
-	{'minute': 6, 'temp_level': temp_level['HIGH']},
+	{'minute': 5, 'temp_level': temp_level['HIGH']},
 	{'minute': 20, 'temp_level': temp_level['COOL']},
 ]
 
