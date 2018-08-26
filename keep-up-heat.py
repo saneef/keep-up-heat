@@ -19,13 +19,13 @@ thermocouple = None
 
 probe_delay = .25 # Seconds. Minimum .25 is required for themocouple to work
 
-profile = profile(argv)
+profile = profile(sys.argv)
 
 checkpoints = sorted(profile, key=lambda x: x['minute'])
 
 def heat_from_args(argv):
 	try:
-		index =  argv.index('--heat')
+		index =  argv.index('--temp')
 	except ValueError:
 		return None
 
@@ -78,7 +78,7 @@ def main():
 			dest_temp = fixed_heat_level
 		else:
 			current_checkpoint = get_next_setting(start_time, current_time, current_checkpoint)
-			dest_temp = fixed_heat_level if fixed_heat_level != None else  checkpoints[current_checkpoint]["temp_level"]
+			dest_temp = fixed_heat_level if fixed_heat_level != None else  checkpoints[current_checkpoint]["temp"]
 		elapsed_time = datetime.timedelta(seconds=round(current_time - start_time))
 		message = "[%s] %.2f°C (%s°C)"  % (elapsed_time, current_temp, dest_temp)
 		sys.stdout.write(message)
