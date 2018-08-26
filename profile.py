@@ -3,6 +3,7 @@
 
 import sys
 import csv
+import json
 
 MAX_TEMP = 240
 MIN_TEMP = 40
@@ -47,7 +48,12 @@ def read_profile_csv(path):
 
 def profile(argv):
 	path = get_profile_path_from_args(argv)
-	return read_profile_csv(path)
+	profile = read_profile_csv(path)
+	print "Loaded profile: " + path
+	print "==="
+	print json.dumps(profile, sort_keys=True, indent=4)
+	print "===\n"
+	return profile
 
 if __name__ == "__main__":
-  print profile(sys.argv)
+  profile(sys.argv)
