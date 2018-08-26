@@ -49,10 +49,12 @@ def read_profile_csv(path):
 def profile(argv):
 	path = get_profile_path_from_args(argv)
 	profile = read_profile_csv(path)
-	print "Loaded profile: " + path
-	print "==="
-	print json.dumps(profile, sort_keys=True, indent=4)
-	print "===\n"
+	if path != None:
+		print "Loaded profile: " + path
+	if profile != None:
+		print "==="
+		print json.dumps(profile, sort_keys=False, indent=2)
+		print "===\n"
 	return profile
 
 if __name__ == "__main__":
