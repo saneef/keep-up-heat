@@ -6,33 +6,24 @@ import sys
 import datetime
 import RPi.GPIO as GPIO
 from max31855.max6675 import MAX6675, MAX6675Error
+from profile import profile
 
 cs_pin = 8
 clock_pin = 11
 data_pin = 9
 relay_pin = 16
 units = "c"
-temp_level = {
-	'LOW': 180,
-	'MED': 215,
-	'HIGH': 240,
-	'COOL': 40
-}
+
 fixed_heat_level = None
 thermocouple = None
 
 probe_delay = .25 # Seconds. Minimum .25 is required for themocouple to work
 
-profile = [
-	{'minute': 0, 'temp_level': temp_level['LOW']},
-	{'minute': 2, 'temp_level': temp_level['MED']},
-	{'minute': 5, 'temp_level': temp_level['HIGH']},
-	{'minute': 20, 'temp_level': temp_level['COOL']},
-]
+profile = profile(argv)
 
 checkpoints = sorted(profile, key=lambda x: x['minute'])
 
-def heat_level_from_args(argv):
+def heat_from_args(argv):
 	try:
 		index =  argv.index('--heat')
 	except ValueError:
@@ -40,8 +31,8 @@ def heat_level_from_args(argv):
 
 	if (index > 0):
 		temp = argv[index + 1]
-		if temp != None and temp_level.has_key(temp):
-			return temp_level[temp]
+		if temp != None:
+			return float(temp)
 
 	return None
 
@@ -71,7 +62,7 @@ def get_next_setting(start_time, current_time, checkpoint=0):
 	for point in checkpoints:
 		if (point["minute"] * 60 + start_time) < current_time:
 			next_checkpoint = checkpoints.index(point)
-	
+
 	return next_checkpoint
 
 def main():
@@ -79,7 +70,7 @@ def main():
 	init_relay()
 	current_checkpoint = 0
 	start_time = time.time()
-	fixed_heat_level = heat_level_from_args(sys.argv)
+	fixed_heat_level = heat_from_args(sys.argv)
 	while True:
 		current_temp = thermocouple.get()
 		current_time = time.time()
